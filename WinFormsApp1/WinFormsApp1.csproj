@@ -1,14 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Title>TestPackage</Title>
-    <Company>PIbd-33</Company>
-    <Authors>Bima Daryshev</Authors>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="KOP" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KOP\KOP.csproj" />
+  </ItemGroup>
 
 </Project>
