@@ -1,6 +1,6 @@
 ﻿namespace KOP
 {
-    partial class UserControl2
+    partial class InputComponent
     {
         /// <summary> 
         /// Обязательная переменная конструктора.

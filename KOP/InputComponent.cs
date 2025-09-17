@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace KOP
 {
-    public partial class UserControl2 : UserControl
+    public partial class InputComponent : UserControl
     {
         public event EventHandler TextChanged;
 
@@ -52,7 +52,7 @@ namespace KOP
             public InvalidDateException(string message) : base(message) { }
         }
 
-        public UserControl2()
+        public InputComponent()
         {
             InitializeComponent();
 

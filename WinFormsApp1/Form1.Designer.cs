@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            userControl11 = new KOP.UserControl1();
-            userControl21 = new KOP.UserControl2();
+            userControl11 = new KOP.ListComponent();
+            userControl21 = new KOP.InputComponent();
             SuspendLayout();
             // 
             // userControl11
@@ -62,7 +62,7 @@
 
         #endregion
 
-        private KOP.UserControl1 userControl11;
-        private KOP.UserControl2 userControl21;
+        private KOP.ListComponent userControl11;
+        private KOP.InputComponent userControl21;
     }
 }

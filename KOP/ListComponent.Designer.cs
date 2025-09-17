@@ -1,6 +1,6 @@
 ﻿namespace KOP
 {
-    partial class UserControl1
+    partial class ListComponent
     {
         /// <summary>
         /// Required designer variable.

@@ -1,8 +1,8 @@
 ﻿namespace KOP
 {
-    public partial class UserControl1 : UserControl
+    public partial class ListComponent : UserControl
     {
-        public UserControl1()
+        public ListComponent()
         {
             InitializeComponent();
             listBox1.SelectedIndexChanged += ListBox1_SelectedIndexChanged;
