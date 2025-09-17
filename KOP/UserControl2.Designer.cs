@@ -29,9 +29,37 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            textBox1 = new TextBox();
+            toolTip1 = new ToolTip(components);
+            SuspendLayout();
+            // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(58, 52);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(156, 27);
+            textBox1.TabIndex = 0;
+            toolTip1.SetToolTip(textBox1, "DD.MM.YYYY");
+            textBox1.TextChanged += textBox1_TextChanged;
+            // 
+            // toolTip1
+            // 
+            toolTip1.ShowAlways = true;
+            // 
+            // UserControl2
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(textBox1);
+            Name = "UserControl2";
+            Size = new Size(286, 138);
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
+
+        private TextBox textBox1;
+        private ToolTip toolTip1;
     }
 }

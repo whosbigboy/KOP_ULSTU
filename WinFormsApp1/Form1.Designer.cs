@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             userControl11 = new KOP.UserControl1();
+            userControl21 = new KOP.UserControl2();
             SuspendLayout();
             // 
             // userControl11
@@ -39,11 +40,20 @@
             userControl11.Size = new Size(459, 449);
             userControl11.TabIndex = 0;
             // 
+            // userControl21
+            // 
+            userControl21.dateText = null;
+            userControl21.Location = new Point(454, 84);
+            userControl21.Name = "userControl21";
+            userControl21.Size = new Size(267, 311);
+            userControl21.TabIndex = 1;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(492, 510);
+            ClientSize = new Size(839, 510);
+            Controls.Add(userControl21);
             Controls.Add(userControl11);
             Name = "Form1";
             Text = "Form1";
@@ -53,5 +63,6 @@
         #endregion
 
         private KOP.UserControl1 userControl11;
+        private KOP.UserControl2 userControl21;
     }
 }
