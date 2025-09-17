@@ -6,10 +6,10 @@ namespace WinFormsApp1
         {
             InitializeComponent();
 
-            userControl11.Items.Add("dima");
-            userControl11.Items.Add("sheym");
-            userControl11.Items.Add("cyxaryk");
-            userControl11.Items.Add("vanya");
+            listComponent1.Items.Add("dima");
+            listComponent1.Items.Add("sheym");
+            listComponent1.Items.Add("cyxaryk");
+            listComponent1.Items.Add("vanya");
         }
     }
 }

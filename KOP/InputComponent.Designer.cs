@@ -40,7 +40,6 @@
             textBox1.Size = new Size(156, 27);
             textBox1.TabIndex = 0;
             toolTip1.SetToolTip(textBox1, "DD.MM.YYYY");
-            textBox1.TextChanged += textBox1_TextChanged;
             // 
             // toolTip1
             // 

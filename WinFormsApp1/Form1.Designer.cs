@@ -28,33 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            userControl11 = new KOP.ListComponent();
-            userControl21 = new KOP.InputComponent();
+            inputComponent1 = new KOP.InputComponent();
+            listComponent1 = new KOP.ListComponent();
             SuspendLayout();
             // 
-            // userControl11
+            // inputComponent1
             // 
-            userControl11.Location = new Point(12, 22);
-            userControl11.Name = "userControl11";
-            userControl11.SelectedValue = "";
-            userControl11.Size = new Size(459, 449);
-            userControl11.TabIndex = 0;
+            inputComponent1.dateText = null;
+            inputComponent1.Location = new Point(482, 118);
+            inputComponent1.Name = "inputComponent1";
+            inputComponent1.Size = new Size(279, 172);
+            inputComponent1.TabIndex = 0;
             // 
-            // userControl21
+            // listComponent1
             // 
-            userControl21.dateText = null;
-            userControl21.Location = new Point(454, 84);
-            userControl21.Name = "userControl21";
-            userControl21.Size = new Size(267, 311);
-            userControl21.TabIndex = 1;
+            listComponent1.Location = new Point(39, 40);
+            listComponent1.Name = "listComponent1";
+            listComponent1.SelectedValue = "";
+            listComponent1.Size = new Size(459, 379);
+            listComponent1.TabIndex = 1;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(839, 510);
-            Controls.Add(userControl21);
-            Controls.Add(userControl11);
+            Controls.Add(listComponent1);
+            Controls.Add(inputComponent1);
             Name = "Form1";
             Text = "Form1";
             ResumeLayout(false);
@@ -62,7 +62,7 @@
 
         #endregion
 
-        private KOP.ListComponent userControl11;
-        private KOP.InputComponent userControl21;
+        private KOP.ListComponent listComponent1;
+        private KOP.InputComponent inputComponent1;
     }
 }
