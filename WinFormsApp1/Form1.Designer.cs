@@ -34,7 +34,7 @@
             // 
             // inputComponent1
             // 
-            inputComponent1.dateText = null;
+            inputComponent1.DateText = null;
             inputComponent1.Location = new Point(482, 118);
             inputComponent1.Name = "inputComponent1";
             inputComponent1.Size = new Size(279, 172);

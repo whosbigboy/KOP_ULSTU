@@ -1,5 +1,7 @@
-﻿using System;
+﻿using KOP.Exceptions;
+using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -7,30 +9,43 @@ namespace KOP
 {
     public partial class InputComponent : UserControl
     {
-        private readonly string pattern = @"^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.(\d{4})$";
+        public event Action? ChangeText;
 
-        public string? dateText
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string DateExample { get; private set; } = string.Empty;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public DateTime? DateText
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(textBox1.Text))
+                if (checkBox1.Checked) return null;
+
+                if (!checkBox1.Checked && string.IsNullOrEmpty(textBox1.Text))
                 {
-                    return null;
+                    throw new EmptyValueWithoutCheckBoxException();
                 }
-                return textBox1.Text;
+
+                string dateString = textBox1.Text;
+
+                if (DateTime.TryParse(dateString, out DateTime date)) return date;
+                else throw new IncorrectStringException();
+
             }
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
+                if (value == null)
                 {
-                    textBox1.Text = string.Empty;
+                    checkBox1.Checked = true;
+                    textBox1.Enabled = false;
                 }
                 else
                 {
-                    if (ValidateInput(value))
-                    {
-                        textBox1.Text = value;
-                    }
+                    checkBox1.Checked = false;
+                    textBox1.Enabled = true;
+
+                    DateTime date = value.Value;
+                    textBox1.Text = date.ToString("dd.MM.yyyy");
                 }
             }
         }
@@ -38,39 +53,28 @@ namespace KOP
         public InputComponent()
         {
             InitializeComponent();
-
-            textBox1.Validating += textBox1_Validating;
-            toolTip1.SetToolTip(textBox1, "Введите дату в формате DD.MM.YYYY или оставьте пустым");
+            SetDateExample("12.12.2012");
+            toolTip1.SetToolTip(textBox1, DateExample);
+            textBox1.TextChanged += (object? sender, EventArgs e) => ChangeText?.Invoke();
+            checkBox1.CheckedChanged += CheckBoxCheckedChanged;
         }
 
-        private bool ValidateInput(string input) => Regex.IsMatch(input, pattern);
-
-        private void textBox1_Validating(object sender, CancelEventArgs e)
+        private void CheckBoxCheckedChanged(object sender, EventArgs e) // событие на изменение чекбокса
         {
-            try
+            if (checkBox1.Checked)
             {
-                if (!string.IsNullOrWhiteSpace(textBox1.Text) && !ValidateInput(textBox1.Text))
-                {
-                    throw new InputFormatException("Неверный формат даты. Введите дату в формате DD.MM.YYYY");
-                }
+                textBox1.Enabled = false;
             }
-            catch (InputFormatException)
+            else
             {
-                e.Cancel = true;
+                textBox1.Enabled = true;
             }
+            ChangeText?.Invoke();
         }
-    }
 
-    public class InputFormatException : Exception
-    {
-        public InputFormatException(string message) : base(message)
+        public void SetDateExample(string example)
         {
-            MessageBox.Show(
-                message,
-                "Ошибка ввода",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error
-            );
+            if (!string.IsNullOrEmpty(example)) DateExample = example;
         }
     }
 }

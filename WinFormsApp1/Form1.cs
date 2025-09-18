@@ -10,6 +10,8 @@ namespace WinFormsApp1
             listComponent1.Items.Add("sheym");
             listComponent1.Items.Add("cyxaryk");
             listComponent1.Items.Add("vanya");
+
+            
         }
     }
 }
