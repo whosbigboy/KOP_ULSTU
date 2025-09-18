@@ -1,5 +1,7 @@
-﻿using System;
+﻿using KOP.Exceptions;
+using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -7,77 +9,72 @@ namespace KOP
 {
     public partial class InputComponent : UserControl
     {
-        public event EventHandler TextChanged;
+        public event Action? ChangeText;
 
-        private string pattern = @"^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.(\d{4})$";
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string DateExample { get; private set; } = string.Empty;
 
-        public string? dateText
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public DateTime? DateText
         {
+            get
+            {
+                if (checkBox1.Checked) return null;
+
+                if (!checkBox1.Checked && string.IsNullOrEmpty(textBox1.Text))
+                {
+                    throw new EmptyValueWithoutCheckBoxException();
+                }
+
+                string dateString = textBox1.Text;
+
+                if (DateTime.TryParse(dateString, out DateTime date)) return date;
+                else throw new IncorrectStringException();
+
+            }
             set
             {
-                if (string.IsNullOrEmpty(value))
+                if (value == null)
                 {
-                    textBox1.Text = string.Empty;
+                    checkBox1.Checked = true;
+                    textBox1.Enabled = false;
                 }
                 else
                 {
-                    if (ValidateInput(value))
-                        textBox1.Text = value;
-                    else
-                        throw new InvalidDateException("Текст не соответствует шаблону.");
+                    checkBox1.Checked = false;
+                    textBox1.Enabled = true;
+
+                    DateTime date = value.Value;
+                    textBox1.Text = date.ToString("dd.MM.yyyy");
                 }
             }
-            get
-            {
-                if (string.IsNullOrEmpty(textBox1.Text))
-                {
-                    return null;
-                }
-
-                if (ValidateInput(textBox1.Text))
-                    return textBox1.Text;
-
-                throw new InvalidDateException("Значение не соответствует формату даты DD.MM.YYYY.");
-            }
-        }
-
-        public bool ValidateInput(string? input)
-        {
-            if (string.IsNullOrEmpty(input)) return true;
-            return Regex.IsMatch(input, pattern);
-        }
-
-        public class InvalidDateException : Exception
-        {
-            public InvalidDateException(string message) : base(message) { }
         }
 
         public InputComponent()
         {
             InitializeComponent();
-
-            textBox1.TextChanged += textBox1_TextChanged;
-            textBox1.Validating += textBox1_Validating;
-
-            toolTip1.SetToolTip(textBox1, "Введите дату в формате DD.MM.YYYY или оставьте пустым");
+            SetDateExample("12.12.2012");
+            toolTip1.SetToolTip(textBox1, DateExample);
+            textBox1.TextChanged += (object? sender, EventArgs e) => ChangeText?.Invoke();
+            checkBox1.CheckedChanged += CheckBoxCheckedChanged;
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void CheckBoxCheckedChanged(object sender, EventArgs e) // событие на изменение чекбокса
         {
-            TextChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void textBox1_Validating(object sender, CancelEventArgs e)
-        {
-            if (!string.IsNullOrWhiteSpace(textBox1.Text) && !ValidateInput(textBox1.Text))
+            if (checkBox1.Checked)
             {
-                MessageBox.Show(
-                    "Неверный формат даты. Введите дату в формате DD.MM.YYYY",
-                    "Ошибка ввода",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                textBox1.Enabled = false;
             }
+            else
+            {
+                textBox1.Enabled = true;
+            }
+            ChangeText?.Invoke();
+        }
+
+        public void SetDateExample(string example)
+        {
+            if (!string.IsNullOrEmpty(example)) DateExample = example;
         }
     }
 }
