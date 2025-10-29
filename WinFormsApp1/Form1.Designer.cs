@@ -34,15 +34,14 @@
             // 
             // inputComponent1
             // 
-            inputComponent1.DateText = null;
-            inputComponent1.Location = new Point(482, 118);
+            inputComponent1.Location = new Point(442, 118);
             inputComponent1.Name = "inputComponent1";
-            inputComponent1.Size = new Size(279, 172);
+            inputComponent1.Size = new Size(385, 172);
             inputComponent1.TabIndex = 0;
             // 
             // listComponent1
             // 
-            listComponent1.Location = new Point(39, 40);
+            listComponent1.Location = new Point(12, 31);
             listComponent1.Name = "listComponent1";
             listComponent1.SelectedValue = "";
             listComponent1.Size = new Size(459, 379);
