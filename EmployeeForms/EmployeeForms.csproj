@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Plugins\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ControlsLibraryNet90" Version="1.0.0" />
+    <PackageReference Include="EmployeeContract" Version="1.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="9.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>

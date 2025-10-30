@@ -1,6 +1,6 @@
 ﻿namespace EmployeeReport
 {
-    partial class UserControl1
+    partial class EmployeeReportControl
     {
         /// <summary>
         /// Required designer variable.

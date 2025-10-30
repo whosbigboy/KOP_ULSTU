@@ -1,0 +1,10 @@
+{
+  "Database": {
+    "ConnectionString": "Host=localhost;Port=5432;Database=emplyee_db;Username=postgres;Password=postgres;"
+  },
+  "ConnectionStrings": {
+    "EmployeeDb": "Host=localhost;Port=5432;Database=emplyee_db;Username=postgres;Password=postgres"
+  },
+  "PluginsPath": "Plugins",
+  "License": "./license.json"
+}
