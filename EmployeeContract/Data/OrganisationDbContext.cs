@@ -16,7 +16,7 @@ public class OrganisationDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Настройка Subdivision
+        // Настройка Employee
         modelBuilder.Entity<Employee>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -37,7 +37,7 @@ public class OrganisationDbContext : DbContext
                   .OnDelete(DeleteBehavior.Restrict);
         });
 
-        // Настройка SubdivisionType
+        // Настройка EmployeeType
         modelBuilder.Entity<EmployeeType>(entity =>
         {
             entity.HasKey(e => e.Id);

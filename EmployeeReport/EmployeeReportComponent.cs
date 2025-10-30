@@ -1,4 +1,5 @@
 ﻿using EmployeeContract;
+using EmployeeReport;
 
 namespace EmployeenReport;
 

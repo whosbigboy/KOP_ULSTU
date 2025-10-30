@@ -28,9 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            SuspendLayout();
+            // 
+            // EmployeeReportControl
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Name = "EmployeeReportControl";
+            Size = new Size(210, 185);
+            ResumeLayout(false);
         }
 
         #endregion
