@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using EmployeeContract;
-using EmployeeForm.Composition;
-using EmployeeForm.Licensing;
-using EmployeeForm.Utils;
+using EmployeeForms.Utils;
+using EmployeeForms.Licensing;
+using EmployeeForms.Composition;
 
 namespace EmployeeForms;
 

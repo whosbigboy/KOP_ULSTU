@@ -1,7 +1,7 @@
 ﻿using EmployeeContract;
 using System.Reflection;
 
-namespace EmployeeForm.Composition;
+namespace EmployeeForms.Composition;
 
 internal sealed class ComponentLoader
 {

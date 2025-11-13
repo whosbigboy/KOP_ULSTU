@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using EmployeeContract;
 
-namespace EmployeeForm.Licensing;
+namespace EmployeeForms.Licensing;
 
 internal sealed class LicenseProvider : ILicenseProvider
 {

@@ -1,7 +1,7 @@
 ﻿using EmployeeContract;
 using System.ComponentModel;
 
-namespace EmployeeForm;
+namespace EmployeeForms;
 
 public partial class LoginForm : Form
 {

@@ -1,4 +1,4 @@
-﻿namespace EmployeeForm
+﻿namespace EmployeeForms
 {
     partial class LoginForm
     {

@@ -7,7 +7,7 @@ namespace EmployeeReport
 {
     public partial class EmployeeReportControl : UserControl
     {
-        private readonly OrganisationDbContext _dbContext;
+        private readonly EmployeeDbContext _dbContext;
         private readonly DataGridView _dataGridView;
         private readonly ComboBox _typeComboBox;
         private readonly Button _generateButton;
@@ -68,9 +68,9 @@ namespace EmployeeReport
         {
             try
             {
-                var types = await _dbContext.EmployeeTypes.ToListAsync() ?? [];
-                _typeComboBox.DisplayMember = nameof(EmployeeType.Name);
-                _typeComboBox.ValueMember = nameof(EmployeeType.Id);
+                var types = await _dbContext.EmployeeOrgs.ToListAsync() ?? [];
+                _typeComboBox.DisplayMember = nameof(EmployeeOrg.Name);
+                _typeComboBox.ValueMember = nameof(EmployeeOrg.Id);
                 _typeComboBox.DataSource = types;
             }
             catch (Exception ex)
@@ -91,26 +91,26 @@ namespace EmployeeReport
 
             try
             {
-                var selectedType = (EmployeeType)_typeComboBox.SelectedItem;
+                var selectedOrg = (EmployeeOrg)_typeComboBox.SelectedItem;
 
-                var subdivisions = await _dbContext.Employees
-                    .Include(s => s.EmployeeType)
-                    .Where(s => s.EmployeeTypeId == selectedType.Id)
-                    .OrderBy(s => s.Name)
+                var employees = await _dbContext.Employees
+                    .Include(s => s.EmployeeOrg)
+                    .Where(s => s.EmployeeOrgId == selectedOrg.Id)
+                    .OrderBy(s => s.FIO)
                     .ToListAsync();
 
-                _dataGridView.DataSource = subdivisions.Select(s => new
+                _dataGridView.DataSource = employees.Select(s => new
                 {
-                    Наименование = s.Name,
-                    Цель = s.Purpose ?? "",
-                    Тип = s.EmployeeType.Name,
-                    ДатаОтчета = s.ReportDate?.ToString("yyyy-MM-dd") ?? "",
+                    ФИО = s.FIO,
+                    Должности = s.Posts ?? "",
+                    Организация = s.EmployeeOrg.Name,
+                    Стаж = s.WorkExp,
                     Идентификатор = s.Id.ToString()
                 }).ToList();
 
-                _exportButton.Enabled = subdivisions.Any();
+                _exportButton.Enabled = employees.Any();
 
-                MessageBox.Show($"Найдено подразделений: {subdivisions.Count}", "Отчет сформирован",
+                MessageBox.Show($"Найдено работников: {employees.Count}", "Отчет сформирован",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)

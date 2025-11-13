@@ -2,11 +2,11 @@
 
 namespace EmployeeContract.Entities;
 
-public class EmployeeType
+public class EmployeeOrg
 {
     [Browsable(false)]
     public Guid Id { get; set; } = Guid.NewGuid();
 
-    [DisplayName("Имя")]
-    public required string Name { get; set; }
+    [DisplayName("Наименование")]
+    public string Name { get; set; }
 }

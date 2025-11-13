@@ -13,17 +13,17 @@ public static class DbContextFactory
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
 
-    public static OrganisationDbContext CreateDbContext()
+    public static EmployeeDbContext CreateDbContext()
     {
         if (_configuration == null)
             throw new InvalidOperationException("DbContextFactory not initialized. Call Initialize() first.");
 
-        var optionsBuilder = new DbContextOptionsBuilder<OrganisationDbContext>();
-        var connectionString = _configuration.GetConnectionString("OrganisationDb")
-            ?? throw new InvalidOperationException("Connection string 'OrganisationDb' not found.");
+        var optionsBuilder = new DbContextOptionsBuilder<EmployeeDbContext>();
+        var connectionString = _configuration.GetConnectionString("EmployeeDb")
+            ?? throw new InvalidOperationException("Connection string 'EmployeeDb' not found.");
 
         optionsBuilder.UseNpgsql(connectionString);
-        return new OrganisationDbContext(optionsBuilder.Options);
+        return new EmployeeDbContext(optionsBuilder.Options);
     }
 }
 

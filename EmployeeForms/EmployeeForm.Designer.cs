@@ -48,8 +48,8 @@
             // directoriesToolStripMenuItem
             // 
             directoriesToolStripMenuItem.Name = "directoriesToolStripMenuItem";
-            directoriesToolStripMenuItem.Size = new Size(98, 24);
-            directoriesToolStripMenuItem.Text = "Сотрдники";
+            directoriesToolStripMenuItem.Size = new Size(117, 24);
+            directoriesToolStripMenuItem.Text = "Справочники";
             // 
             // reportsToolStripMenuItem
             // 

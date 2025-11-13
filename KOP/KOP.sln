@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Лаб2", "Лаб2", "{A745
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeReport", "..\EmployeeReport\EmployeeReport.csproj", "{349518E0-A92E-488B-81FB-B4367AEC92BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeDirectory", "..\TypeDirectory\TypeDirectory.csproj", "{272A6E88-C580-4BDA-B040-1DAAD356765D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrgDirectory", "..\TypeDirectory\OrgDirectory.csproj", "{272A6E88-C580-4BDA-B040-1DAAD356765D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeForms", "..\EmployeeForms\EmployeeForms.csproj", "{BD065403-67D5-4E17-9BFA-C4BDAA9A7D2B}"
 EndProject

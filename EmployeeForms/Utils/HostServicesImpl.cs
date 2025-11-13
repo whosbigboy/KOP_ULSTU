@@ -2,33 +2,32 @@
 using Microsoft.Extensions.Configuration;
 using EmployeeContract;
 using EmployeeContract.Data;
-using EmployeeForm.Licensing;
 
-namespace EmployeeForm.Utils;
+namespace EmployeeForms.Utils;
 
 internal class HostServicesImpl : IHostServices
 {
     private readonly ILicenseProvider _licenseProvider;
-    private readonly OrganisationDbContext _dbContext;
+    private readonly EmployeeDbContext _dbContext;
 
     public HostServicesImpl(AccessLevel currentAccessLevel, IConfiguration configuration)
     {
-        var optionsBuilder = new DbContextOptionsBuilder<OrganisationDbContext>();
-        var connectionString = configuration.GetConnectionString("OrganisationDb");
+        var optionsBuilder = new DbContextOptionsBuilder<EmployeeDbContext>();
+        var connectionString = configuration.GetConnectionString("EmployeenDb");
         optionsBuilder.UseNpgsql(connectionString);
 
-        _dbContext = new OrganisationDbContext(optionsBuilder.Options);
+        _dbContext = new EmployeeDbContext(optionsBuilder.Options);
     }
 
     public ILicenseProvider License => _licenseProvider;
 
-    public OrganisationDbContext DbContext => _dbContext;
+    public EmployeeDbContext DbContext => _dbContext;
 
     public object? GetService(Type serviceType)
     {
         if (serviceType == typeof(ILicenseProvider))
             return _licenseProvider;
-        if (serviceType == typeof(OrganisationDbContext))
+        if (serviceType == typeof(EmployeeDbContext))
             return _dbContext;
         return null;
     }
