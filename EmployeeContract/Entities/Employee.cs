@@ -9,17 +9,11 @@ public sealed class Employee
 
     public required string Name { get; set; }
 
-    public string? Purpose { get; set; }
+    public string Purpose { get; set; }
 
-    // Связь с типом подразделения
-    public Guid EmployeeTypeId { get; set; }
-    public EmployeeType EmployeeType { get; set; } = null!;
+    // Связь с подразделением
+    public Guid EmployeeOrgId { get; set; }
 
     // Дата отчёта в текущем году (может отсутствовать)
     public DateTime? ReportDate { get; set; }
-
-    // Для иерархии подразделений
-    public Guid? ParentId { get; set; }
-    public Employee? Parent { get; set; }
-    public ICollection<Employee> Children { get; set; } = [];
 }
