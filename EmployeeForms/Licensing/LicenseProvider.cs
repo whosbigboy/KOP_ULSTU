@@ -1,7 +1,5 @@
-﻿using System.Text.Json;
-using EmployeeContract;
-
-namespace EmployeeForms.Licensing;
+﻿using EmployeeContract;
+using System.Text.Json;
 
 internal sealed class LicenseProvider : ILicenseProvider
 {
@@ -13,10 +11,28 @@ internal sealed class LicenseProvider : ILicenseProvider
 
     public LicenseProvider(string licenseFilePath)
     {
-        if (!File.Exists(licenseFilePath))
-            throw new FileNotFoundException("Файл лицензии не найден.", licenseFilePath);
+        // ДОБАВЛЯЕМ ДЕТАЛЬНУЮ ИНФОРМАЦИЮ О ПУТИ
+        var fullPath = Path.GetFullPath(licenseFilePath);
+        Console.WriteLine($"Поиск файла лицензии по пути: {fullPath}");
 
-        var json = File.ReadAllText(licenseFilePath);
+        if (!File.Exists(fullPath))
+        {
+            // Проверяем альтернативные расположения
+            var alternativePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "license.json");
+            Console.WriteLine($"Альтернативный путь: {alternativePath}");
+
+            if (File.Exists(alternativePath))
+            {
+                fullPath = alternativePath;
+                Console.WriteLine($"Файл лицензии найден по альтернативному пути: {fullPath}");
+            }
+            else
+            {
+                throw new FileNotFoundException($"Файл лицензии не найден. Искали по пути: {fullPath}", licenseFilePath);
+            }
+        }
+
+        var json = File.ReadAllText(fullPath);
         var doc = JsonDocument.Parse(json).RootElement;
 
         var role = doc.GetProperty("role").GetString() ?? "none";
@@ -30,5 +46,7 @@ internal sealed class LicenseProvider : ILicenseProvider
             "user" => AccessLevel.Basic,
             _ => AccessLevel.Minimal
         };
+
+        Console.WriteLine($"Лицензия загружена: Role={role}, AccessLevel={_currentAccessLevel}, Expires={_expires}");
     }
 }

@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="controlslibrarynet90" Version="1.0.0" />
-    <PackageReference Include="EmployeeContract" Version="1.0.0" />
+    <PackageReference Include="EmployeeContract" Version="1.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
       <PrivateAssets>all</PrivateAssets>

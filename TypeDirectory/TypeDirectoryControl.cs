@@ -9,7 +9,7 @@ namespace TypeDirectory;
 public partial class TypeDirectoryControl : UserControl
 {
     private readonly IHostServices _host;
-    private readonly OrganisationDbContext _dbContext;
+    private readonly EmployeeDbContext _dbContext;
     private readonly BindingSource _bindingSource = new BindingSource();
 
     public TypeDirectoryControl(IHostServices host)
@@ -30,8 +30,8 @@ public partial class TypeDirectoryControl : UserControl
         if (e.KeyCode == Keys.Insert)
         {
             // Создаём новый объект с временным именем
-            var newType = new EmployeeType { Id = Guid.NewGuid(), Name = "Новая запись" };
-            _bindingSource.Add(newType);
+            var newOrg = new EmployeeOrg { Id = Guid.NewGuid(), Name = "Новая запись" };
+            _bindingSource.Add(newOrg);
 
             BeginInvoke((Delegate)(() =>
             {
@@ -48,13 +48,13 @@ public partial class TypeDirectoryControl : UserControl
         {
             if (MessageBox.Show("Удалить выбранную запись?", "Подтверждение", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                if (_bindingSource.Current is EmployeeType current)
+                if (_bindingSource.Current is EmployeeOrg current)
                 {
                     // Проверяем, существует ли объект в базе
-                    var entityInDb = await _dbContext.EmployeeTypes.FirstOrDefaultAsync(x => x.Id == current.Id);
+                    var entityInDb = await _dbContext.EmployeeOrgs.FirstOrDefaultAsync(x => x.Id == current.Id);
                     if (entityInDb != null)
                     {
-                        _dbContext.EmployeeTypes.Remove(entityInDb);
+                        _dbContext.EmployeeOrgs.Remove(entityInDb);
                         await _dbContext.SaveChangesAsync();
                     }
 
@@ -67,7 +67,7 @@ public partial class TypeDirectoryControl : UserControl
 
     private async void DataGridView_CellEndEdit(object? sender, DataGridViewCellEventArgs e)
     {
-        if (dataGridViewCustom.Rows[e.RowIndex].DataBoundItem is not EmployeeType subDiv)
+        if (dataGridViewCustom.Rows[e.RowIndex].DataBoundItem is not EmployeeOrg subDiv)
             return;
 
         if (string.IsNullOrWhiteSpace(subDiv.Name))
@@ -83,7 +83,7 @@ public partial class TypeDirectoryControl : UserControl
         {
             if (_dbContext.Entry(subDiv).State == EntityState.Detached)
             {
-                _dbContext.EmployeeTypes.Add(subDiv);
+                _dbContext.EmployeeOrgs.Add(subDiv);
             }
 
             await _dbContext.SaveChangesAsync();
@@ -98,8 +98,8 @@ public partial class TypeDirectoryControl : UserControl
     {
         try
         {
-            var types = await _dbContext.EmployeeTypes.ToListAsync();
-            _bindingSource.DataSource = new BindingList<EmployeeType>(types);
+            var orgs = await _dbContext.EmployeeOrgs.ToListAsync();
+            _bindingSource.DataSource = new BindingList<EmployeeOrg>(orgs);
         }
         catch (Exception ex)
         {

@@ -5,11 +5,12 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Version>1.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="ControlsLibraryNet90" Version="1.0.0" />
-    <PackageReference Include="EmployeeContract" Version="1.0.2" />
+    <PackageReference Include="EmployeeContract" Version="1.0.4" />
     <PackageReference Include="KOP" Version="1.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">

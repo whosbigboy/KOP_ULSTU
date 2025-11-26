@@ -40,14 +40,14 @@ public partial class EmployeeEditForm : Form
             comboBoxOrg.DataSource = types;
             comboBoxOrg.DropDownStyle = ComboBoxStyle.DropDownList;
 
+            // ИСПРАВЛЕННАЯ ЛОГИКА ВЫБОРА:
             var match = types.FirstOrDefault(t => t.Id == _model.EmployeeOrgId);
             if (match != null)
             {
-                comboBoxOrg.SelectedItem = match;
+                comboBoxOrg.SelectedItem = match; // Используем SelectedItem вместо поиска по индексу
             }
             else
             {
-                // Если нет — сбрасываем выбор
                 comboBoxOrg.SelectedIndex = -1;
             }
         }
@@ -57,10 +57,10 @@ public partial class EmployeeEditForm : Form
             textBoxFIO.Text = _model.FIO;
         if (textBoxPosts != null)
             textBoxPosts.Text = _model.Posts ?? string.Empty;
-        if (controlInputRangeNumberWorkExp != null && _model.WorkExp>0 
+        if (numericUpDownWorkExp != null && _model.WorkExp > 0
             && _model.WorkExp <= 30)
         {
-            controlInputRangeNumberWorkExp.Value = _model.WorkExp;
+            numericUpDownWorkExp.Value = _model.WorkExp;
         }
 
         if (textBoxFIO != null)
@@ -69,8 +69,8 @@ public partial class EmployeeEditForm : Form
             textBoxPosts.TextChanged += (_, __) => _dirty = true;
         if (comboBoxOrg != null)
             comboBoxOrg.SelectedIndexChanged += (_, __) => _dirty = true;
-        if (controlInputRangeNumberWorkExp != null)
-            controlInputRangeNumberWorkExp.ValueChanged += (_, __) => _dirty = true;
+        if (numericUpDownWorkExp != null)
+            numericUpDownWorkExp.ValueChanged += (_, __) => _dirty = true;
     }
 
     protected override void OnShown(EventArgs e)
@@ -85,39 +85,33 @@ public partial class EmployeeEditForm : Form
         if (DialogResult == DialogResult.OK)
         {
             // Перенос значений в модель
-            if (txtFIO != null)
-                _model.FIO = txtFIO.Text.Trim();
+            if (textBoxFIO != null)
+                _model.FIO = textBoxFIO.Text.Trim();
 
-            if (txtAutobiography != null)
-                _model.Autobiography = string.IsNullOrWhiteSpace(txtAutobiography.Text) ? null : txtAutobiography.Text.Trim();
+            if (textBoxPosts != null)
+                _model.Posts = string.IsNullOrWhiteSpace(textBoxPosts.Text) ? null
+                    : textBoxPosts.Text.Trim();
 
-            if (cmbPost != null)
+            if (comboBoxOrg != null)
             {
-                if (cmbPost.SelectedIndex >= 0 && cmbPost.SelectedValue is EmployeePost subType)
+                // ИСПРАВЛЕННАЯ ЛОГИКА:
+                if (comboBoxOrg.SelectedItem is EmployeeOrg selectedOrg)
                 {
-                    _model.EmployeePostId = subType.Id;
+                    _model.EmployeeOrgId = selectedOrg.Id;
                 }
                 else
                 {
-                    MessageBox.Show("Нужно выбрать должность", "Валидация",
+                    MessageBox.Show("Нужно выбрать подразделение", "Валидация",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     e.Cancel = true;
                     return;
                 }
             }
 
-            if (dtPromotionDate != null)
+            // Также исправляем логику для WorkExp
+            if (numericUpDownWorkExp != null)
             {
-                var noDate = Controls.OfType<CheckBox>().FirstOrDefault(c => c.Name == "chkNoDate");
-                if (noDate is not null && noDate.Checked)
-                {
-                    _model.PromotionDate = null;
-                }
-                else
-                {
-                    var d = dtPromotionDate.Value.Date;
-                    _model.PromotionDate = DateTime.SpecifyKind(d, DateTimeKind.Local);
-                }
+                _model.WorkExp = (int)numericUpDownWorkExp.Value;
             }
 
             return;
@@ -137,5 +131,4 @@ public partial class EmployeeEditForm : Form
             }
         }
     }
-}
 }

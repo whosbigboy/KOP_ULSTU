@@ -1,4 +1,5 @@
 ﻿using EmployeeContract;
+using System.Reflection;
 
 namespace EmployeeDirectory;
 
@@ -14,5 +15,19 @@ public class EmployeeDirectoryComponent : IComponentContract
     public IComponentMetadata Metadata => _metadata;
 
     public UserControl CreateControl(IHostServices host)
-        => new EmployeeDirectoryControl(host);
+    {
+        try
+        {
+            // Проверяем загрузку сборки
+            var assembly = Assembly.Load("ControlsLibraryNet90");
+            Console.WriteLine($"Assembly loaded from: {assembly.Location}");
+
+            return new EmployeeDirectoryControl(host);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading assembly: {ex}");
+            throw;
+        }
+    }
 }

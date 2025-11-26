@@ -7,7 +7,7 @@ public sealed class EmployeeTypeCatalogComponent : IComponentContract
     private static readonly IComponentMetadata _metadata =
             new ComponentMetadata(
                 id: "EmployeeDirectoryCatalog",
-                title: "Справочник сотрудников",
+                title: "Справочник отделов",
                 componentType: ComponentType.Directory,
                 requiredAccess: AccessLevel.Minimal);
 

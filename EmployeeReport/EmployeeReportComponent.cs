@@ -1,7 +1,7 @@
 ﻿using EmployeeContract;
 using EmployeeReport;
 
-namespace EmployeenReport;
+namespace EmployeeReport;
 
 public class EmployeeReportComponent : IComponentContract
 {

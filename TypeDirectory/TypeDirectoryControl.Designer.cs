@@ -29,27 +29,18 @@
         private void InitializeComponent()
         {
             dataGridViewCustom = new DataGridView();
-            columnEmployee = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dataGridViewCustom).BeginInit();
             SuspendLayout();
             // 
             // dataGridViewCustom
             // 
             dataGridViewCustom.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCustom.Columns.AddRange(new DataGridViewColumn[] { columnEmployee });
             dataGridViewCustom.Dock = DockStyle.Fill;
             dataGridViewCustom.Location = new Point(0, 0);
             dataGridViewCustom.Name = "dataGridViewCustom";
             dataGridViewCustom.RowHeadersWidth = 51;
             dataGridViewCustom.Size = new Size(800, 450);
             dataGridViewCustom.TabIndex = 0;
-            // 
-            // columnEmployee
-            // 
-            columnEmployee.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            columnEmployee.HeaderText = "Сотрудники";
-            columnEmployee.MinimumWidth = 6;
-            columnEmployee.Name = "columnEmployee";
             // 
             // TypeDirectoryControl
             // 
@@ -65,6 +56,5 @@
         #endregion
 
         private DataGridView dataGridViewCustom;
-        private DataGridViewTextBoxColumn columnEmployee;
     }
 }

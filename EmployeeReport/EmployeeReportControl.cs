@@ -1,4 +1,4 @@
-﻿ using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using EmployeeContract;
 using EmployeeContract.Data;
 using EmployeeContract.Entities;

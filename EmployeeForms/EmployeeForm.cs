@@ -1,55 +1,59 @@
 ﻿using EmployeeContract;
 
-namespace EmployeeForms
+namespace EmployeeForms;
+public partial class EmployeeForm : Form
 {
-    public partial class EmployeeForm : Form
+    private readonly Dictionary<string, IComponentContract> _components;
+    private readonly IHostServices _host;
+
+    public EmployeeForm(Dictionary<string, IComponentContract> components, IHostServices host)
     {
-        private readonly Dictionary<string, IComponentContract> _directories;
-        private readonly Dictionary<string, UserControl> _controls = new();
-        private readonly IHostServices _host;
-        private Panel _activePanel;
+        _components = components;
+        _host = host;
+        InitializeComponent();
 
-        public EmployeeForm(Dictionary<string, IComponentContract> components, IHostServices host)
+        try
         {
-            _directories = components;
-            _host = host;
-            InitializeComponent();
-            _activePanel = new Panel { Dock = DockStyle.Fill };
-            Controls.Add(_activePanel);
-            try
-            {
-                PopulateMenu(directoriesToolStripMenuItem.DropDownItems, ComponentType.Directory);
-                PopulateMenu(reportsToolStripMenuItem.DropDownItems, ComponentType.Report);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка при загрузке компонент", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            PopulateMenu(directoriesToolStripMenuItem.DropDownItems, ComponentType.Directory);
+            PopulateMenu(reportsToolStripMenuItem.DropDownItems, ComponentType.Report);
         }
-
-        private void PopulateMenu(ToolStripItemCollection menuItems, ComponentType type)
+        catch (Exception ex)
         {
-            var components = _directories.Values.Where(c => c.Metadata.ComponentType == type);
-            foreach (var component in components)
+            MessageBox.Show($"Ошибка при создании меню: {ex.Message}", "Ошибка",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private void PopulateMenu(ToolStripItemCollection menuItems, ComponentType type)
+    {
+        var components = _components.Values.Where(c => c.Metadata.ComponentType == type).ToList();
+
+        foreach (var component in components)
+        {
+            var menuItem = new ToolStripMenuItem { Text = component.Metadata.Title };
+            menuItem.Click += (sender, e) =>
             {
-                var menuItem = new ToolStripMenuItem { Text = component.Metadata.Title };
-                menuItem.Click += (sender, e) => ShowComponent(component.Metadata.Title, type == ComponentType.Directory
-                    ? component.CreateControl(_host)
-                    : _controls.GetValueOrDefault(component.Metadata.Id) ?? component.CreateControl(_host));
-                if (type == ComponentType.Report)
+                try
                 {
-                    _controls.TryAdd(component.Metadata.Id, component.CreateControl(_host));
+                    var control = component.CreateControl(_host);
+                    ShowComponent(component.Metadata.Title, control);
                 }
-                menuItems.Add(menuItem);
-            }
-        }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка создания компонента: {ex.Message}", "Ошибка",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            };
 
-        private void ShowComponent(string title, UserControl control)
-        {
-            panel1.Controls.Clear();
-            control.Dock = DockStyle.Fill;
-            panel1.Controls.Add(control);
-            Text = $"Учет сотрудников - {title}";
+            menuItems.Add(menuItem);
         }
+    }
+
+    private void ShowComponent(string title, UserControl control)
+    {
+        panel1.Controls.Clear();
+        control.Dock = DockStyle.Fill;
+        panel1.Controls.Add(control);
+        Text = $"Учет сотрудников - {title}";
     }
 }

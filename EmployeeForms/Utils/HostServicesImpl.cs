@@ -10,12 +10,24 @@ internal class HostServicesImpl : IHostServices
     private readonly ILicenseProvider _licenseProvider;
     private readonly EmployeeDbContext _dbContext;
 
-    public HostServicesImpl(AccessLevel currentAccessLevel, IConfiguration configuration)
+    // ДОБАВЛЯЕМ ПАРАМЕТР licenseFilePath
+    public HostServicesImpl(AccessLevel currentAccessLevel, IConfiguration configuration, string licenseFilePath)
     {
-        var optionsBuilder = new DbContextOptionsBuilder<EmployeeDbContext>();
-        var connectionString = configuration.GetConnectionString("EmployeenDb");
-        optionsBuilder.UseNpgsql(connectionString);
+        // Инициализируем LicenseProvider с правильным путем
+        _licenseProvider = new LicenseProvider(licenseFilePath);
 
+        // Исправляем опечатку в connection string
+        var optionsBuilder = new DbContextOptionsBuilder<EmployeeDbContext>();
+        var connectionString = configuration.GetConnectionString("EmployeeDb"); // Исправлено "EmployeenDb" -> "EmployeeDb"
+
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            // Fallback на прямое указание строки подключения
+            connectionString = configuration.GetSection("Database:ConnectionString").Value
+                ?? "Host=localhost;Port=5432;Database=employee_db;Username=postgres;Password=postgres";
+        }
+
+        optionsBuilder.UseNpgsql(connectionString);
         _dbContext = new EmployeeDbContext(optionsBuilder.Options);
     }
 

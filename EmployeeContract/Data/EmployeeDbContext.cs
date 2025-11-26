@@ -15,26 +15,27 @@ public class EmployeeDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        // Указание имен таблиц
-        modelBuilder.Entity<Employee>().ToTable("employee");
-        modelBuilder.Entity<EmployeeOrg>().ToTable("employee_post");
 
-        // Настройка EmployeePost с указанием имен столбцов
+        // Указание имен таблиц согласно вашей БД
+        modelBuilder.Entity<Employee>().ToTable("employees");
+        modelBuilder.Entity<EmployeeOrg>().ToTable("employee_orgs");
+
+        // Настройка EmployeeOrg (employee_orgs)
         modelBuilder.Entity<EmployeeOrg>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Id)
-                  .HasColumnName("id"); // явно указываем имя столбца
+                  .HasColumnName("id");
 
             entity.Property(e => e.Name)
                   .IsRequired()
                   .HasMaxLength(100)
-                  .HasColumnName("name"); // явно указываем имя столбца
+                  .HasColumnName("name");
 
             entity.HasIndex(e => e.Name).IsUnique();
         });
 
-        // Настройка Employee с указанием имен столбцов
+        // Настройка Employee (employees)
         modelBuilder.Entity<Employee>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -53,31 +54,17 @@ public class EmployeeDbContext : DbContext
             entity.Property(e => e.EmployeeOrgId)
                   .HasColumnName("employee_org_id");
 
+            // СООТВЕТСТВИЕ С БД: work_exp -> WorkExp
             entity.Property(e => e.WorkExp)
-                   .HasColumnName("WorkExp");
+                  .HasColumnName("work_exp")
+                  .HasDefaultValue(0);
 
-            // Связь с орг работника
+            // Связь с подразделением
             entity.HasOne(e => e.EmployeeOrg)
                   .WithMany()
                   .HasForeignKey(e => e.EmployeeOrgId)
                   .OnDelete(DeleteBehavior.Restrict);
         });
-
-        // Настройка EmployeePost
-        modelBuilder.Entity<EmployeeOrg>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id)
-                  .HasColumnName("id");
-            entity.Property(e => e.Name).IsRequired().HasMaxLength(100)
-                  .HasColumnName("name");
-            entity.HasIndex(e => e.Name).IsUnique();
-        });
-
-        // Настройка типов данных для PostgreSQL
-        modelBuilder.Entity<Employee>()
-            .Property(e => e.WorkExp)
-            .HasColumnName("promotion_date");
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
@@ -88,6 +75,7 @@ public class EmployeeDbContext : DbContext
         configurationBuilder.Properties<DateTime?>()
             .HaveColumnType("timestamp without time zone");
     }
+
     public async Task<bool> TestDatabaseConnection()
     {
         try
@@ -116,6 +104,5 @@ public class EmployeeDbContext : DbContext
             Console.WriteLine($"Ошибка подключения: {ex.Message}");
             return false;
         }
-
     }
 }

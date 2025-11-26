@@ -37,6 +37,8 @@
             buttonOk = new Button();
             buttonCancel = new Button();
             comboBoxOrg = new ComboBox();
+            numericUpDownWorkExp = new NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)numericUpDownWorkExp).BeginInit();
             SuspendLayout();
             // 
             // labelFIO
@@ -115,11 +117,22 @@
             comboBoxOrg.Size = new Size(326, 28);
             comboBoxOrg.TabIndex = 10;
             // 
+            // numericUpDownWorkExp
+            // 
+            numericUpDownWorkExp.Location = new Point(127, 212);
+            numericUpDownWorkExp.Maximum = new decimal(new int[] { 30, 0, 0, 0 });
+            numericUpDownWorkExp.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numericUpDownWorkExp.Name = "numericUpDownWorkExp";
+            numericUpDownWorkExp.Size = new Size(326, 27);
+            numericUpDownWorkExp.TabIndex = 11;
+            numericUpDownWorkExp.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
             // EmployeeEditForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(488, 323);
+            Controls.Add(numericUpDownWorkExp);
             Controls.Add(comboBoxOrg);
             Controls.Add(buttonCancel);
             Controls.Add(buttonOk);
@@ -131,6 +144,7 @@
             Controls.Add(labelFIO);
             Name = "EmployeeEditForm";
             Text = "EmployeeEditForm";
+            ((System.ComponentModel.ISupportInitialize)numericUpDownWorkExp).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -146,5 +160,6 @@
         private Button buttonOk;
         private Button buttonCancel;
         private ComboBox comboBoxOrg;
+        private NumericUpDown numericUpDownWorkExp;
     }
 }

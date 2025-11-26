@@ -10,13 +10,14 @@ namespace EmployeeDirectory
     public partial class EmployeeDirectoryControl : UserControl
     {
         private readonly IHostServices _host;
-        private readonly OrganisationDbContext _dbContext;
+        private readonly EmployeeDbContext _dbContext;
 
-        private readonly ControlDataTreeData _tree = new() { Dock = DockStyle.Fill };
+        private readonly DataGridView _dataGridView = new() { Dock = DockStyle.Fill };
         private readonly ContextMenuStrip _ctx = new();
         private readonly ToolStripMenuItem _miAdd = new("Добавить");
         private readonly ToolStripMenuItem _miEdit = new("Изменить");
         private readonly ToolStripMenuItem _miDelete = new("Удалить");
+        private readonly ToolStripMenuItem _miRefresh = new("Обновить");
 
         public EmployeeDirectoryControl(IHostServices host)
         {
@@ -24,28 +25,79 @@ namespace EmployeeDirectory
             _host = host;
             _dbContext = host.DbContext;
 
-            Controls.Add(_tree);
-            _ctx.Items.AddRange([_miAdd, _miEdit, _miDelete]);
+            InitializeDataGridView();
+            Controls.Add(_dataGridView);
+
+            _ctx.Items.AddRange([_miAdd, _miEdit, _miDelete, new ToolStripSeparator(), _miRefresh]);
             _miAdd.ShortcutKeys = Keys.Control | Keys.A;
             _miEdit.ShortcutKeys = Keys.Control | Keys.U;
             _miDelete.ShortcutKeys = Keys.Control | Keys.D;
-            _tree.ContextMenuStrip = _ctx;
+            _miRefresh.ShortcutKeys = Keys.F5;
+            _dataGridView.ContextMenuStrip = _ctx;
 
             _miAdd.Click += (_, __) => CreateNew();
             _miEdit.Click += (_, __) => EditSelected();
             _miDelete.Click += (_, __) => DeleteSelected();
-
-            var config = new DataTreeNodeConfig
-            {
-                NodeNames = new Queue<string>(["TypeName", "ReportDate", "Name", "Id"]),
-                UseProperites = true
-            };
-            var baseType = typeof(ControlDataTreeData).BaseType;
-            var prop = baseType?.GetProperty("Levels", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-            prop?.SetValue(_tree, config);
+            _miRefresh.Click += async (_, __) => await ReloadAsync();
 
             Load += async (_, __) => await ReloadAsync();
             KeyDown += OnKeyDownHandler;
+        }
+
+        private void InitializeDataGridView()
+        {
+            _dataGridView.AutoGenerateColumns = false;
+            _dataGridView.AllowUserToAddRows = false;
+            _dataGridView.AllowUserToDeleteRows = false;
+            _dataGridView.ReadOnly = true;
+            _dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            _dataGridView.MultiSelect = false;
+            _dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            // Настраиваем колонки
+            _dataGridView.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "OrgName",
+                DataPropertyName = "OrgName",
+                HeaderText = "Подразделение",
+                FillWeight = 25
+            });
+
+            _dataGridView.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "Id",
+                DataPropertyName = "Id",
+                HeaderText = "Идентификатор",
+                FillWeight = 20,
+                Visible = false // Скрываем ID, но оставляем для доступа
+            });
+
+            _dataGridView.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "FIO",
+                DataPropertyName = "FIO",
+                HeaderText = "ФИО",
+                FillWeight = 30
+            });
+
+            _dataGridView.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "WorkExp",
+                DataPropertyName = "WorkExp",
+                HeaderText = "Стаж работы",
+                FillWeight = 15
+            });
+
+            _dataGridView.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "Posts",
+                DataPropertyName = "Posts",
+                HeaderText = "Должность",
+                FillWeight = 25
+            });
+
+            // Двойной клик для редактирования
+            _dataGridView.CellDoubleClick += (_, __) => EditSelected();
         }
 
         private void OnKeyDownHandler(object? sender, KeyEventArgs e)
@@ -65,79 +117,79 @@ namespace EmployeeDirectory
                 DeleteSelected();
                 e.Handled = true;
             }
+            else if (e.KeyCode == Keys.F5)
+            {
+                _ = ReloadAsync();
+                e.Handled = true;
+            }
         }
 
         private async Task ReloadAsync()
         {
             var list = await _dbContext.Employees
-                .Include(s => s.EmployeeType)
-                .Include(s => s.Parent)
-                .OrderBy(s => s.EmployeeType.Name)
-                .ThenBy(s => s.ReportDate)
-                .ThenBy(s => s.Name)
+                .Include(s => s.EmployeeOrg)
+                .OrderBy(s => s.EmployeeOrg.Name)
+                .ThenBy(s => s.WorkExp)
+                .ThenBy(s => s.FIO)
                 .ToListAsync();
 
-            var rows = list.Select(s => new TreeRow
+            var rows = list.Select(s => new ListRow
             {
-                TypeName = s.EmployeeType.Name,
-                ReportDate = s.ReportDate?.ToString("yyyy-MM-dd") ?? "",
-                Name = s.Name,
-                Id = s.Id.ToString()
+                OrgName = s.EmployeeOrg.Name,
+                WorkExp = s.WorkExp.ToString(),
+                FIO = s.FIO,
+                Id = s.Id.ToString(),
+                Posts = s.Posts ?? string.Empty
             }).ToList();
 
-            var tv = GetInnerTreeView(_tree);
-            if (tv is null)
-            {
-                return;
-            }
-            tv.BeginUpdate();
-            tv.Nodes.Clear();
-            if (rows.Count > 0)
-            {
-                _tree.AddData(rows);
-            }
-            tv.EndUpdate();
+            _dataGridView.DataSource = rows;
+
+            // Обновляем заголовки с количеством записей
+            UpdateHeader();
         }
 
-        private static TreeView? GetInnerTreeView(ControlDataTreeData tree)
+        private void UpdateHeader()
         {
-            var baseType = typeof(ControlDataTreeData).BaseType;
-            var fld = baseType?.GetField("treeView", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            return fld?.GetValue(tree) as TreeView;
+            var count = _dataGridView.Rows.Count;
+            this.FindForm().Text = $"Сотрудники - {count} записей";
         }
 
-        private async void CreateNew()
+        private void CreateNew()
         {
-            var model = new Employee { Name = string.Empty };
+            var model = new Employee { FIO = string.Empty };
             using var dlg = new EmployeeEditForm(_host, model);
             if (dlg.ShowDialog(this) == DialogResult.OK)
             {
-                if (string.IsNullOrWhiteSpace(model.Name)) { MessageBox.Show("Наименование обязательно"); return; }
-                if (model.EmployeeTypeId == Guid.Empty) { MessageBox.Show("Нужно выбрать тип"); return; }
+                if (string.IsNullOrWhiteSpace(model.FIO)) { MessageBox.Show("ФИО обязательно"); return; }
+                if (model.EmployeeOrgId == Guid.Empty) { MessageBox.Show("Нужно выбрать подразделение"); return; }
 
                 _dbContext.Employees.Add(model);
-                await _dbContext.SaveChangesAsync();
-                await ReloadAsync();
+                _dbContext.SaveChanges();
+                _ = ReloadAsync();
             }
         }
 
         private async void EditSelected()
         {
-            var tv = GetInnerTreeView(_tree);
-            if (tv == null || tv.SelectedNode == null)
+            if (_dataGridView.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Выберите элемент дерева (Id)");
+                MessageBox.Show("Выберите запись для редактирования");
                 return;
             }
-            var idText = tv.SelectedNode.Text;
+
+            var selectedRow = _dataGridView.SelectedRows[0];
+            var idText = selectedRow.Cells["Id"].Value?.ToString();
+
             if (!Guid.TryParse(idText, out var id))
             {
-                MessageBox.Show("Выберите конечный узел с идентификатором");
+                MessageBox.Show("Не удалось получить идентификатор записи");
                 return;
             }
+
             var tracked = await _dbContext.Employees
-                .Include(s => s.EmployeeType)
+                .Include(s => s.EmployeeOrg)
                 .FirstOrDefaultAsync(s => s.Id == id);
+
             if (tracked == null)
             {
                 await ReloadAsync();
@@ -147,8 +199,8 @@ namespace EmployeeDirectory
             using var dlg = new EmployeeEditForm(_host, tracked);
             if (dlg.ShowDialog(this) == DialogResult.OK)
             {
-                if (string.IsNullOrWhiteSpace(tracked.Name)) { MessageBox.Show("Наименование обязательно"); return; }
-                if (tracked.EmployeeTypeId == Guid.Empty) { MessageBox.Show("Нужно выбрать тип"); return; }
+                if (string.IsNullOrWhiteSpace(tracked.FIO)) { MessageBox.Show("ФИО обязательно"); return; }
+                if (tracked.EmployeeOrgId == Guid.Empty) { MessageBox.Show("Нужно выбрать подразделение"); return; }
 
                 await _dbContext.SaveChangesAsync();
                 await ReloadAsync();
@@ -157,20 +209,23 @@ namespace EmployeeDirectory
 
         private async void DeleteSelected()
         {
-            var tv = GetInnerTreeView(_tree);
-            if (tv == null || tv.SelectedNode == null)
+            if (_dataGridView.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Выберите элемент дерева (Id)");
+                MessageBox.Show("Выберите запись для удаления");
                 return;
             }
+
             if (MessageBox.Show("Удалить выбранную запись?", "Подтверждение", MessageBoxButtons.YesNo) != DialogResult.Yes)
             {
                 return;
             }
-            var idText = tv.SelectedNode.Text;
+
+            var selectedRow = _dataGridView.SelectedRows[0];
+            var idText = selectedRow.Cells["Id"].Value?.ToString();
+
             if (!Guid.TryParse(idText, out var id))
             {
-                MessageBox.Show("Выберите конечный узел с идентификатором");
+                MessageBox.Show("Не удалось получить идентификатор записи");
                 return;
             }
 
@@ -184,12 +239,13 @@ namespace EmployeeDirectory
             await ReloadAsync();
         }
 
-        private sealed class TreeRow
+        private sealed class ListRow
         {
-            public string TypeName { get; set; } = string.Empty;
-            public string ReportDate { get; set; } = string.Empty;
-            public string Name { get; set; } = string.Empty;
+            public string OrgName { get; set; } = string.Empty;
+            public string WorkExp { get; set; } = string.Empty;
+            public string FIO { get; set; } = string.Empty;
             public string Id { get; set; } = string.Empty;
+            public string Posts { get; set; } = string.Empty;
         }
     }
 }
