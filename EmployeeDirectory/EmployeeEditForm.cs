@@ -33,6 +33,12 @@ public partial class EmployeeEditForm : Form
     {
         var types = await _host.DbContext.EmployeeOrgs.ToListAsync() ?? [];
 
+        if (buttonOk != null)
+            buttonOk.DialogResult = DialogResult.OK;
+
+        if (buttonCancel != null)
+            buttonCancel.DialogResult = DialogResult.Cancel;
+
         if (comboBoxOrg != null)
         {
             comboBoxOrg.DisplayMember = nameof(EmployeeOrg.Name);
@@ -44,7 +50,7 @@ public partial class EmployeeEditForm : Form
             var match = types.FirstOrDefault(t => t.Id == _model.EmployeeOrgId);
             if (match != null)
             {
-                comboBoxOrg.SelectedItem = match; // Используем SelectedItem вместо поиска по индексу
+                comboBoxOrg.SelectedItem = match; 
             }
             else
             {
@@ -76,8 +82,8 @@ public partial class EmployeeEditForm : Form
     protected override void OnShown(EventArgs e)
     {
         base.OnShown(e);
-        AcceptButton = Controls.OfType<Button>().FirstOrDefault(b => b.DialogResult == DialogResult.OK);
-        CancelButton = Controls.OfType<Button>().FirstOrDefault(b => b.DialogResult == DialogResult.Cancel);
+        AcceptButton = buttonOk;
+        CancelButton = buttonCancel;
     }
 
     private void OnFormClosing(object? sender, FormClosingEventArgs e)

@@ -32,15 +32,12 @@ internal sealed class ComponentLoader
                     {
                         if (Activator.CreateInstance(type) is IComponentContract instance)
                         {
-                            // ВРЕМЕННО ОТКЛЮЧАЕМ ПРОВЕРКУ ДОСТУПА
-                            // if (instance.Metadata.RequiredAccess <= _currentAccessLevel)
-                            // {
-                            result.Add(instance);
-                            // }
-                            // else
-                            // {
-                            //     errorMessages.Add($"Доступ запрещен: {instance.Metadata.Title} (требуется {instance.Metadata.RequiredAccess})");
-                            // }
+
+                            if (instance.Metadata.RequiredAccess <= _currentAccessLevel)
+                             {
+                                 result.Add(instance); 
+                             }
+
                         }
                     }
                     catch (Exception ex)
@@ -55,7 +52,6 @@ internal sealed class ComponentLoader
             }
         }
 
-        // Показываем ошибки если есть
         if (errorMessages.Any())
         {
             MessageBox.Show(

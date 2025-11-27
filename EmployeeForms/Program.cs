@@ -25,15 +25,6 @@ internal static class Program
 
         // Путь к лицензии
         var licensePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "license.json");
-        if (!File.Exists(licensePath))
-        {
-            var licenseContent = @"{
-  ""role"": ""admin"",
-  ""expires"": ""03.11.2025""
-}";
-            File.WriteAllText(licensePath, licenseContent);
-            Debug.WriteLine("✓ Создан файл лицензии");
-        }
 
         var licenseProvider = new LicenseProvider(licensePath);
         if (!licenseProvider.IsExpired)

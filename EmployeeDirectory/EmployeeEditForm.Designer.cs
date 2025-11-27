@@ -99,6 +99,7 @@
             buttonOk.TabIndex = 8;
             buttonOk.Text = "OK";
             buttonOk.UseVisualStyleBackColor = true;
+            buttonOk.DialogResult = DialogResult.OK;
             // 
             // buttonCancel
             // 
@@ -108,6 +109,7 @@
             buttonCancel.TabIndex = 9;
             buttonCancel.Text = "Отмена";
             buttonCancel.UseVisualStyleBackColor = true;
+            buttonOk.DialogResult = DialogResult.Cancel;
             // 
             // comboBoxOrg
             // 

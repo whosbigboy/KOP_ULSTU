@@ -158,10 +158,20 @@ namespace EmployeeDirectory
         {
             var model = new Employee { FIO = string.Empty };
             using var dlg = new EmployeeEditForm(_host, model);
+
+            // Убедитесь, что используется ShowDialog()
             if (dlg.ShowDialog(this) == DialogResult.OK)
             {
-                if (string.IsNullOrWhiteSpace(model.FIO)) { MessageBox.Show("ФИО обязательно"); return; }
-                if (model.EmployeeOrgId == Guid.Empty) { MessageBox.Show("Нужно выбрать подразделение"); return; }
+                if (string.IsNullOrWhiteSpace(model.FIO))
+                {
+                    MessageBox.Show("ФИО обязательно");
+                    return;
+                }
+                if (model.EmployeeOrgId == Guid.Empty)
+                {
+                    MessageBox.Show("Нужно выбрать подразделение");
+                    return;
+                }
 
                 _dbContext.Employees.Add(model);
                 _dbContext.SaveChanges();
